@@ -56,7 +56,7 @@ class KeywordCloudBlockPlugin extends BlockPlugin {
 			'keywords_'. $locale, $press->getId(),
 			array($this, '_cacheMiss')
 		);
-var_dump($cacheManager);
+
 		$cacheTime = $cache->getCacheTime();
 		if (time() - $cache->getCacheTime() > 60 * 60 * 24 * KEYWORD_BLOCK_CACHE_DAYS)
 			$cache->flush();
@@ -75,7 +75,7 @@ var_dump($cacheManager);
 	}
 	
 	function _cacheMiss($cache, $id) {
-var_dump($cache);
+
 		//Get all published Articles of this Journal
 		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
 		$publishedMonograph =& $publishedMonographDao->getByPressId($id);
