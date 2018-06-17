@@ -46,23 +46,22 @@ class KeywordCloudBlockPlugin extends BlockPlugin {
 	 * @see BlockPlugin::getContents
 	 */
 	function getContents($templateMgr, $request = null) {
-		$press = 	$request->getPress();
-		if (!$press) return '';
-		//var_dump($press->getId());
+		$journal = $request->getJournal();
+		if (!$journal) return '';
+		
 		$locale = AppLocale::getLocale();
 
 		$cacheManager = CacheManager::getManager();
 		$cache = $cacheManager->getFileCache(
-			'keywords_'. $locale, $press->getId(),
+			'keywords_'. $locale, $journal->getId(),
 			array($this, '_cacheMiss')
 		);
-var_dump($cacheManager);
+
 		$cacheTime = $cache->getCacheTime();
 		if (time() - $cache->getCacheTime() > 60 * 60 * 24 * KEYWORD_BLOCK_CACHE_DAYS)
 			$cache->flush();
 
 		$keywords =& $cache->getContents();
-		
 		if (empty($keywords)) return '';
 		
 		$templateMgr->addJavaScript('d3','https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js');
@@ -75,17 +74,17 @@ var_dump($cacheManager);
 	}
 	
 	function _cacheMiss($cache, $id) {
-var_dump($cache);
+
 		//Get all published Articles of this Journal
-		$publishedMonographDao = DAORegistry::getDAO('PublishedMonographDAO');
-		$publishedMonograph =& $publishedMonographDao->getByPressId($id);
+		$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
+		$publishedArticles =& $publishedArticleDao->getPublishedArticlesByJournalId($cache->getCacheId(), $rangeInfo = null, $reverse = true);
 
 		//Get all IDs of the published Articles
 		$submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO');
 		//Get all Keywords from all published articles of this journal
 		$all_keywords = array();
-		while ($publishedMonograph = $publishedMonograph->next()) {
-			$article_keywords = $submissionKeywordDao->getKeywords($publishedMonograph->getId(),
+		while ($publishedArticle = $publishedArticles->next()) {
+			$article_keywords = $submissionKeywordDao->getKeywords($publishedArticle->getId(),
 				array(AppLocale::getLocale()))[AppLocale::getLocale()];
 			$all_keywords = array_merge($all_keywords, $article_keywords);
 		}

@@ -1,5 +1,18 @@
+# NOT WORKING DRAFT
 # Keyword Cloud Block Plugin
-A sidebar block plugin for [Open Journal Systems](https://github.com/pkp/ojs) and [Open Monograph Press](https://github.com/pkp/omp) which displays a tag cloud of keywords.
+A sidebar block plugin for [Open Monograph Press](https://github.com/pkp/omp) which displays a tag cloud of keywords.
+
+The plugin found at: [https://github.com/ali-sokhandan/ojs3-keywordcloud-plugin](https://github.com/ali-sokhandan/ojs3-keywordcloud-plugin) 
+
+Doesn't work with OMP3.1.1-1
+
+It returns an error in this call:
+
+`$journal = $request->getJournal();`
+
+KeywordCloudBlockPlugin.inc.php on line 49
+
+At this stage this DRAFT makes the right calls but the keywords cloud is empty.
 
 ![](snapshot.gif)
 
